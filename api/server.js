@@ -10,7 +10,7 @@ const fs = require("fs");
 function tryRequireRouter(relPath) {
   // relPath is expected like './routers/school.router'
   try {
-    const baseName = relPath.replace(/^(\.\/routers\/)?/, '').replace(/\.js$/,'');
+    const baseName = relPath.replace(/^(.\/routers\/)?/, '').replace(/\.js$/,'');
     const filePath = path.join(__dirname, 'routers', baseName + '.js');
     const filePathAlt = path.join(__dirname, 'routers', baseName + '.router.js');
     if (fs.existsSync(filePath)) return require(filePath);
@@ -38,8 +38,31 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const corsOption = { exposedHeaders: "Authorization" };
-app.use(cors(corsOption));
+
+// CORS: explicitly allow frontend and BFF dev origins for local development
+const allowedOrigins = [
+  process.env.FRONTEND_URL || 'http://localhost:5173',
+  'http://localhost:4000'
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // allow requests with no origin like curl, postman
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Authorization'],
+};
+
+// Use CORS for all routes and let the middleware handle preflight responses
+app.use(cors(corsOptions));
+
 app.use(cookieParser());
 
 // Serve the uploads folder statically
