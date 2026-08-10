@@ -1,18 +1,13 @@
-const express = require("express");
-const authMiddleware = require("../auth/auth");
-const {
-  createSubject,
-  getAllSubjects,
-  updateSubjectwithId,
-  deleteSubjectwithId,
-} = require("../controllers/subject.controller");
-
+const express = require('express');
 const router = express.Router();
 
-// ✅ Protect the create route with authMiddleware
-router.post("/create", authMiddleware(["SCHOOL"]), createSubject);
-router.get("/all", authMiddleware(["SCHOOL", "TEACHER"]), getAllSubjects);
-router.patch("/update/:id", authMiddleware(["SCHOOL"]), updateSubjectwithId); // AUTHENTICATED USER FOR UPDATE
-router.delete("/delete/:id", authMiddleware(["SCHOOL"]), deleteSubjectwithId);
+router.get('/', (req, res) => {
+  res.json({ message: 'Placeholder subject router', data: [] });
+});
+
+router.get('/:id', (req, res) => {
+  const id = req.params.id;
+  res.json({ id, name: `Subject ${id}`, note: 'placeholder' });
+});
 
 module.exports = router;

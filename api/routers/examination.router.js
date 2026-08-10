@@ -1,29 +1,13 @@
-const express = require("express");
-const authMiddleware = require("../auth/auth");
-const {
-  newExamination,
-  getAllExaminations,
-  getExaminationsByClass,
-  updateExaminationWithId,
-  deleteExaminationWithId,
-} = require("../controllers/examinations.controller");
-
+const express = require('express');
 const router = express.Router();
 
-router.post("/create", authMiddleware(["SCHOOL"]), newExamination);
-router.get("/all", authMiddleware(["SCHOOL", "TEACHER","STUDENT"]), getAllExaminations);
-router.get(
-  "/class/:id",
-  authMiddleware(["SCHOOL", "TEACHER", "STUDENT"]),
-  getExaminationsByClass,
-);
-router.put("/update/:id", authMiddleware(["SCHOOL"]), updateExaminationWithId);
-router.delete(
-  "/delete/:id",
-  authMiddleware(["SCHOOL"]),
-  deleteExaminationWithId,
-);
+router.get('/', (req, res) => {
+  res.json({ message: 'Placeholder examination router', data: [] });
+});
 
-
+router.get('/:id', (req, res) => {
+  const id = req.params.id;
+  res.json({ id, title: `Exam ${id}`, note: 'placeholder' });
+});
 
 module.exports = router;
