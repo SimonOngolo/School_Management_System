@@ -1,11 +1,12 @@
-require('dotenv').config();
-
 const express = require('express');
 const axios = require('axios');
 const http = require('http');
 const { Server } = require('socket.io');
+const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 const { connectRabbit } = require('./rabbitmq');
+
+dotenv.config();
 
 const app = express();
 app.use(express.json());
