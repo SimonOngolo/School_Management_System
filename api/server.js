@@ -45,11 +45,22 @@ app.use(cookieParser());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/school_management1986";
+const SKIP_DB = (process.env.SKIP_DB || '').toLowerCase() === 'true';
 
-mongoose
-  .connect(MONGO_URI)
-  .then(() => console.log(`✅ Connected to MongoDB (${MONGO_URI})`))
-  .catch((e) => console.error("❌ Error connecting to MongoDB", e));
+async function maybeConnectDb() {
+  if (SKIP_DB) {
+    console.log('SKIP_DB is set — skipping MongoDB connection');
+    return;
+  }
+
+  try {
+    await mongoose.connect(MONGO_URI);
+    console.log(`✅ Connected to MongoDB (${MONGO_URI})`);
+  } catch (e) {
+    console.error('❌ Error connecting to MongoDB', e);
+    console.warn('Continuing without database. Set SKIP_DB=true to suppress connection attempts for local development.');
+  }
+}
 
 // ROUTERS
 
@@ -65,6 +76,10 @@ app.use("/api/examinations", examinationRouter);
 app.use("/api/notice", noticeRouter);
 
 const PORT = process.env.PORT || 3002;
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+
+// Start server regardless of DB connection — DB is optional in local dev with SKIP_DB
+maybeConnectDb().finally(() => {
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+  });
 });
