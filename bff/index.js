@@ -1,12 +1,11 @@
+require('dotenv').config();
+
 const express = require('express');
 const axios = require('axios');
 const http = require('http');
 const { Server } = require('socket.io');
-const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 const { connectRabbit } = require('./rabbitmq');
-
-dotenv.config();
 
 const app = express();
 app.use(express.json());
@@ -50,23 +49,42 @@ io.on('connection', (socket) => {
 
 // Connect to RabbitMQ and listen for events to broadcast via socket.io
 async function start() {
-  const rabbit = await connectRabbit(process.env.RABBITMQ_URL);
-  if (rabbit) {
-    const { channel } = rabbit;
-    const q = 'school.events';
-    await channel.assertQueue(q, { durable: true });
-    channel.consume(q, (msg) => {
-      if (msg) {
-        try {
-          const event = JSON.parse(msg.content.toString());
-          io.emit(event.type, event.payload);
-          channel.ack(msg);
-        } catch (e) {
-          console.error('failed to process message', e);
-          channel.nack(msg, false, false);
+  const skipRabbit = (process.env.SKIP_RABBITMQ || '').toLowerCase() === 'true';
+  if (skipRabbit) {
+    console.log('SKIP_RABBITMQ is set — skipping RabbitMQ connection');
+    server.listen(PORT, () => console.log(`BFF listening on ${PORT}`));
+    return;
+  }
+
+  const rabbitUrl = process.env.RABBITMQ_URL;
+  if (!rabbitUrl) {
+    console.warn('RABBITMQ_URL not set — attempting default connect, set SKIP_RABBITMQ=true to skip');
+  }
+
+  try {
+    const rabbit = await connectRabbit(rabbitUrl);
+    if (rabbit) {
+      const { channel } = rabbit;
+      const q = 'school.events';
+      await channel.assertQueue(q, { durable: true });
+      channel.consume(q, (msg) => {
+        if (msg) {
+          try {
+            const event = JSON.parse(msg.content.toString());
+            io.emit(event.type, event.payload);
+            channel.ack(msg);
+          } catch (e) {
+            console.error('failed to process message', e);
+            channel.nack(msg, false, false);
+          }
         }
-      }
-    });
+      });
+      console.log('Connected to RabbitMQ and consuming queue:', q);
+    } else {
+      console.warn('connectRabbit returned null — continuing without RabbitMQ');
+    }
+  } catch (e) {
+    console.error('Failed to connect to RabbitMQ (continuing without it):', e && e.message ? e.message : e);
   }
 
   server.listen(PORT, () => console.log(`BFF listening on ${PORT}`));
