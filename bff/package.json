@@ -4,7 +4,8 @@
   "type": "commonjs",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "dev:skiprabbit": "cross-env SKIP_RABBITMQ=true nodemon index.js"
   },
   "dependencies": {
     "amqplib": "^0.10.3",
@@ -15,6 +16,7 @@
     "socket.io": "^4.7.2"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "cross-env": "^7.0.3"
   }
 }
