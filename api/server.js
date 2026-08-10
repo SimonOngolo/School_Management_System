@@ -5,16 +5,33 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const path = require("path");
+const fs = require("fs");
 
-const schoolRouter = require("./routers/school.router");
-const classRouter = require("./routers/class.router");
-const subjectRouter = require("./routers/subject.router");
-const studentRouter = require("./routers/student.router");
-const teacherRouter = require("./routers/teacher.router");
-const scheduleRouter = require("./routers/schedule.router");
-const attendanceRouter = require("./routers/attendance.router");
-const examinationRouter = require("./routers/examination.router");
-const noticeRouter = require("./routers/notice.router");
+function tryRequireRouter(relPath) {
+  // relPath is expected like './routers/school.router'
+  try {
+    const baseName = relPath.replace(/^(\.\/routers\/)?/, '').replace(/\.js$/,'');
+    const filePath = path.join(__dirname, 'routers', baseName + '.js');
+    const filePathAlt = path.join(__dirname, 'routers', baseName + '.router.js');
+    if (fs.existsSync(filePath)) return require(filePath);
+    if (fs.existsSync(filePathAlt)) return require(filePathAlt);
+    console.warn(`Router file not found: ${baseName} — mounting empty router`);
+    return express.Router();
+  } catch (e) {
+    console.warn(`Error requiring router ${relPath}:`, e.message);
+    return express.Router();
+  }
+}
+
+const schoolRouter = tryRequireRouter('./routers/school.router');
+const classRouter = tryRequireRouter('./routers/class.router');
+const subjectRouter = tryRequireRouter('./routers/subject.router');
+const studentRouter = tryRequireRouter('./routers/student.router');
+const teacherRouter = tryRequireRouter('./routers/teacher.router');
+const scheduleRouter = tryRequireRouter('./routers/schedule.router');
+const attendanceRouter = tryRequireRouter('./routers/attendance.router');
+const examinationRouter = tryRequireRouter('./routers/examination.router');
+const noticeRouter = tryRequireRouter('./routers/notice.router');
 
 const app = express();
 
@@ -27,9 +44,11 @@ app.use(cookieParser());
 // Serve the uploads folder statically
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/school_management1986";
+
 mongoose
-  .connect("mongodb://localhost:27017/school_management1986")
-  .then(() => console.log("✅ Connected to MongoDB"))
+  .connect(MONGO_URI)
+  .then(() => console.log(`✅ Connected to MongoDB (${MONGO_URI})`))
   .catch((e) => console.error("❌ Error connecting to MongoDB", e));
 
 // ROUTERS

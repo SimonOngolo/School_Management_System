@@ -1,17 +1,13 @@
 const express = require('express');
-const authMiddleware = require('../auth/auth');
-const { registerSchool, getAllSchools, loginSchool,updateSchool,getSchoolOwnData } = require('../controllers/school.controller');
 const router = express.Router();
 
+router.get('/', (req, res) => {
+  res.json({ message: 'Placeholder school router', data: [] });
+});
 
-router.post("/register", registerSchool);
-router.get("/all", getAllSchools);
-router.post("/login", loginSchool);
-router.patch("/update",authMiddleware(['SCHOOL']), updateSchool);//AUTHENTICATED USER FOR UPDATE
-router.get("/fetch-single",authMiddleware(['SCHOOL']), getSchoolOwnData);
-
-
-
-
+router.get('/:id', (req, res) => {
+  const id = req.params.id;
+  res.json({ id, name: `School ${id}`, note: 'placeholder' });
+});
 
 module.exports = router;

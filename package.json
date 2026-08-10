@@ -1,18 +1,21 @@
 {
   "name": "school-management-system",
   "version": "1.0.0",
-  "description": "",
+  "description": "Monorepo root for School Management System",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "install-all": "npm install --prefix api && npm install --prefix frontend && npm install --prefix FrontendFees && npm install --prefix ServerFees && npm install --prefix ahey-master && npm install --prefix bulletins-INPTIC-backend-main && npm install --prefix bulletins-INPTIC-frontend-main",
+    "install-all": "npm install --prefix api && npm install --prefix frontend && npm install --prefix FrontendFees && npm install --prefix ServerFees && npm install --prefix ahey-master && npm install --prefix Bulletin_backend && npm install --prefix Bulletin_frontend && npm install --prefix bff",
+    "install-bff": "npm install --prefix bff",
     "start-api": "npm start --prefix api",
     "start-server-fees": "npm start --prefix ServerFees",
     "start-ahey": "npm start --prefix ahey-master",
-    "start-bulletins-backend": "npm start --prefix bulletins-INPTIC-backend-main",
+    "start-bulletins-backend": "npm start --prefix Bulletin_backend",
+    "start-bff": "node bff/index.js",
+    "dev-bff": "nodemon bff/index.js",
     "dev-frontend": "npm run dev --prefix frontend",
     "dev-frontend-fees": "npm run dev --prefix FrontendFees",
-    "dev-bulletins-frontend": "npm run dev --prefix bulletins-INPTIC-frontend-main",
+    "dev-bulletins-frontend": "npm run dev --prefix Bulletin_frontend",
     "dev": "concurrently \"npm run start-api\" \"npm run start-server-fees\" \"npm run start-ahey\" \"npm run start-bulletins-backend\" \"npm run dev-frontend\" \"npm run dev-frontend-fees\" \"npm run dev-bulletins-frontend\""
   },
   "keywords": [],
@@ -20,9 +23,7 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "concurrently": "^10.0.4"
-  },
-  "dependencies": {
-    "axios": "^1.19.0"
+    "concurrently": "^10.0.4",
+    "nodemon": "^3.0.1"
   }
 }

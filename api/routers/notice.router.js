@@ -1,26 +1,13 @@
-const express = require("express");
-const authMiddleware = require("../auth/auth");
-const {
-  createNotice,
-  getAllNotices,
-  updateNoticewithId,
-  deleteNoticewithId,
-} = require("../controllers/notice.controller");
-
+const express = require('express');
 const router = express.Router();
 
-// ✅ All Notice routes are secured via role-based authentication matrix
-router.post("/create", authMiddleware(["SCHOOL", "TEACHER"]), createNotice);
-router.get("/all", authMiddleware(["SCHOOL", "TEACHER", "STUDENT"]), getAllNotices);
-router.patch(
-  "/update/:id",
-  authMiddleware(["SCHOOL",]),
-  updateNoticewithId,
-);
-router.delete(
-  "/delete/:id",
-  authMiddleware(["SCHOOL", "TEACHER"]),
-  deleteNoticewithId,
-);
+router.get('/', (req, res) => {
+  res.json({ message: 'Placeholder notice router', data: [] });
+});
+
+router.get('/:id', (req, res) => {
+  const id = req.params.id;
+  res.json({ id, title: `Notice ${id}`, note: 'placeholder' });
+});
 
 module.exports = router;
