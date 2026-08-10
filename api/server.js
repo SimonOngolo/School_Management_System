@@ -10,7 +10,7 @@ const fs = require("fs");
 function tryRequireRouter(relPath) {
   // relPath is expected like './routers/school.router'
   try {
-    const baseName = relPath.replace(/^(\.\/routers\/)?/, '').replace(/\.js$/,'');
+    const baseName = relPath.replace(/^(.\/routers\/)?/, '').replace(/\.js$/,'');
     const filePath = path.join(__dirname, 'routers', baseName + '.js');
     const filePathAlt = path.join(__dirname, 'routers', baseName + '.router.js');
     if (fs.existsSync(filePath)) return require(filePath);
