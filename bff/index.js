@@ -1,4 +1,3 @@
-// bff/index.js
 const express = require('express');
 const axios = require('axios');
 const http = require('http');
@@ -13,7 +12,7 @@ const app = express();
 app.use(express.json());
 
 const PORT = process.env.PORT || 4000;
-const API_URL = process.env.API_URL || 'http://localhost:3000';
+const API_URL = process.env.API_URL || 'http://localhost:3002';
 const BULLETIN_URL = process.env.BULLETIN_URL || 'http://localhost:3001';
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
 
@@ -33,7 +32,7 @@ app.get('/student/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const [apiRes, bulletinRes] = await Promise.all([
-      axios.get(`${API_URL}/students/${id}`).catch(() => ({ data: null })),
+      axios.get(`${API_URL}/api/students/${id}`).catch(() => ({ data: null })),
       axios.get(`${BULLETIN_URL}/bulletins/student/${id}`).catch(() => ({ data: null }))
     ]);
     res.json({ student: apiRes.data, bulletins: bulletinRes.data });

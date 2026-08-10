@@ -2,7 +2,7 @@
 
 This repository contains multiple services for a school management system. The main folders of interest are:
 
-- api/ - primary backend APIs
+- api/ - primary backend APIs (uses MongoDB)
 - frontend/ - main frontend
 - Bulletin_backend/ - bulletin microservice backend
 - Bulletin_frontend/ - bulletin microservice frontend
@@ -17,10 +17,11 @@ Quickstart (development)
 
    npm run install-all
 
-2. Start local infra (MySQL + RabbitMQ) using Docker Compose:
+2. Start local infra using Docker Compose (MongoDB + MySQL + RabbitMQ):
 
    docker-compose up -d
 
+   - MongoDB: port 27017
    - MySQL: port 3306 (user: user / password: password)
    - RabbitMQ management UI: http://localhost:15672 (guest/guest)
    - Adminer: http://localhost:8080
@@ -39,14 +40,15 @@ Quickstart (development)
 
 What I changed in this PR
 
-- Added docker-compose.yml with MySQL + RabbitMQ + Adminer
+- Added docker-compose.yml with MongoDB + MySQL + RabbitMQ + Adminer
 - Added a basic BFF (bff/) with JWT skeleton and RabbitMQ helper
-- Fixed root package.json scripts so install-all and dev target the right subfolders
-- Added .env.example for the BFF and improved README with quickstart steps
+- Fixed root package.json scripts and improved README with quickstart steps
+- Added api/.env.example and updated api to read MONGO_URI from env
 
 Next steps
 
 - Wire each microservice to publish/subscribe to RabbitMQ events
 - Add per-service .env.example files and normalize DB connections
+- Add health endpoints & graceful shutdown to backends (if missing)
 - Add CI checks and small integration tests
 

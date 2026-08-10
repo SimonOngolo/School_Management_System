@@ -27,9 +27,11 @@ app.use(cookieParser());
 // Serve the uploads folder statically
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+const MONGO_URI = process.env.MONGO_URI || "mongodb://mongo:27017/school_management1986";
+
 mongoose
-  .connect("mongodb://localhost:27017/school_management1986")
-  .then(() => console.log("✅ Connected to MongoDB"))
+  .connect(MONGO_URI)
+  .then(() => console.log(`✅ Connected to MongoDB (${MONGO_URI})`))
   .catch((e) => console.error("❌ Error connecting to MongoDB", e));
 
 // ROUTERS
