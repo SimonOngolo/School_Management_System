@@ -32,6 +32,7 @@ const scheduleRouter = tryRequireRouter('./routers/schedule.router');
 const attendanceRouter = tryRequireRouter('./routers/attendance.router');
 const examinationRouter = tryRequireRouter('./routers/examination.router');
 const noticeRouter = tryRequireRouter('./routers/notice.router');
+const authRouter = tryRequireRouter('./routers/auth.router');
 
 const app = express();
 
@@ -64,6 +65,7 @@ async function maybeConnectDb() {
 
 // ROUTERS
 
+app.use("/api/auth", authRouter);
 app.use("/api/school", schoolRouter);
 app.use("/api/class", classRouter);
 app.use("/api/students", studentRouter);
