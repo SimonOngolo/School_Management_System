@@ -42,8 +42,7 @@ app.use(express.urlencoded({ extended: true }));
 // CORS: explicitly allow frontend and BFF dev origins for local development
 const allowedOrigins = [
   process.env.FRONTEND_URL || 'http://localhost:5173',
-  'http://localhost:4000',
-  'http://localhost:4000/api'
+  'http://localhost:4000'
 ];
 
 const corsOptions = {
@@ -53,7 +52,7 @@ const corsOptions = {
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(null, false);
+      callback(new Error('Not allowed by CORS'));
     }
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -61,8 +60,8 @@ const corsOptions = {
   exposedHeaders: ['Authorization'],
 };
 
+// Use CORS for all routes and let the middleware handle preflight responses
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
 
 app.use(cookieParser());
 
