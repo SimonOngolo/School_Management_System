@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "install-all": "npm install --prefix api && npm install --prefix frontend && npm install --prefix FrontendFees && npm install --prefix ServerFees && npm install --prefix ahey-master && npm install --prefix Bulletin_backend && npm install --prefix Bulletin_frontend && npm install --prefix bff",
+    "install-all": "npm install --prefix api && npm install --prefix frontend && npm install --prefix FrontendFees && npm install --prefix ServerFees && npm install --prefix ahey-master && npm install --prefix bff",
     "install-bff": "npm install --prefix bff",
     "start-api": "npm start --prefix api",
     "start-server-fees": "npm start --prefix ServerFees",
@@ -16,7 +16,8 @@
     "dev-frontend": "npm run dev --prefix frontend",
     "dev-frontend-fees": "npm run dev --prefix FrontendFees",
     "dev-bulletins-frontend": "npm run dev --prefix Bulletin_frontend",
-    "dev": "concurrently \"npm run start-api\" \"npm run start-server-fees\" \"npm run start-ahey\" \"npm run start-bulletins-backend\" \"npm run dev-frontend\" \"npm run dev-frontend-fees\" \"npm run dev-bulletins-frontend\""
+    "dev": "concurrently \"npm run start-api\" \"npm run start-server-fees\" \"npm run start-ahey\" \"npm run start-bulletins-backend\" \"npm run dev-frontend\" \"npm run dev-frontend-fees\" \"npm run dev-bulletins-frontend\"",
+    "dev-offline": "concurrently \"npm run dev:skipdb --prefix api\" \"npm run dev:skiprabbit --prefix bff\" \"npm run dev --prefix frontend\""
   },
   "keywords": [],
   "author": "",
