@@ -38,8 +38,32 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const corsOption = { exposedHeaders: "Authorization" };
-app.use(cors(corsOption));
+
+// CORS: explicitly allow frontend and BFF dev origins for local development
+const allowedOrigins = [
+  process.env.FRONTEND_URL || 'http://localhost:5173',
+  'http://localhost:4000',
+  'http://localhost:4000/api'
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // allow requests with no origin like curl, postman
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(null, false);
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Authorization'],
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+
 app.use(cookieParser());
 
 // Serve the uploads folder statically
